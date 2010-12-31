@@ -41,8 +41,12 @@ public class FillRectDecorator implements ShapeDecorator {
 			graphics.setComposite(AlphaComposite.SrcOver.derive(opacity));
 		}
 		Rectangle bounds = shape.getBounds();
-		graphics.fill(new Rectangle(bounds.x + shape.getBorderThickness(), bounds.y + shape.getBorderThickness(), bounds.width
-				- 2 * shape.getBorderThickness(), bounds.height - 2 * shape.getBorderThickness()));
+		if (shape.getBorderThickness() > 0) {
+			graphics.fill(new Rectangle(bounds.x + shape.getBorderThickness(), bounds.y + shape.getBorderThickness(),
+					bounds.width - 2 * shape.getBorderThickness(), bounds.height - 2 * shape.getBorderThickness()));
+		} else {
+			graphics.fill(bounds);
+		}
 		//
 		graphics.setColor(oldColor);
 		graphics.setComposite(oldComposite);
