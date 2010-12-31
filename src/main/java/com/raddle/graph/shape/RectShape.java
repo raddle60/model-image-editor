@@ -16,6 +16,8 @@ import com.raddle.graph.decorator.RectBorderDecorator;
  */
 public class RectShape extends AbstractShape {
 	private Rectangle rect;
+	private int offsetX;
+	private int offsetY;
 
 	public RectShape(Rectangle rect) {
 		this.rect = rect;
@@ -39,7 +41,7 @@ public class RectShape extends AbstractShape {
 
 	@Override
 	public Rectangle getBounds() {
-		return rect;
+		return new Rectangle(rect);
 	}
 
 	@Override
@@ -75,6 +77,28 @@ public class RectShape extends AbstractShape {
 	@Override
 	public int getBorderThickness() {
 		return getBorder().getThickness();
+	}
+
+	public int getOffsetX() {
+		return offsetX;
+	}
+
+	public void setOffsetX(int offsetX) {
+		if (parent != null) {
+			this.offsetX = offsetX;
+			rect.x = (int) (parent.getBounds().getX() + offsetX);
+		}
+	}
+
+	public int getOffsetY() {
+		return offsetY;
+	}
+
+	public void setOffsetY(int offsetY) {
+		if (parent != null) {
+			this.offsetY = offsetY;
+			rect.y = (int) (parent.getBounds().getY() + offsetY);
+		}
 	}
 
 }

@@ -37,24 +37,6 @@ public abstract class AbstractShape implements GraphShape {
 		children.add(child);
 	}
 
-	@Override
-	public int getOffsetX() {
-		if (parent == null) {
-			return (int) getBounds().getX();
-		} else {
-			return (int) (getBounds().getX() - parent.getBounds().getX());
-		}
-	}
-
-	@Override
-	public int getOffsetY() {
-		if (parent == null) {
-			return (int) getBounds().getY();
-		} else {
-			return (int) (getBounds().getY() - parent.getBounds().getY());
-		}
-	}
-
 	public void setParent(GraphShape parent) {
 		this.parent = parent;
 	}
