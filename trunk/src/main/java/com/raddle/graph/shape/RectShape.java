@@ -144,7 +144,7 @@ public class RectShape extends AbstractShape implements EditableShape {
 				}
 			}
 			// 自己
-			rect.y = rect.y + pixel;
+			rect.height = rect.height + pixel;
 		} else if (direction == Direction.horizontal) {
 			// 端口
 			for (HandlerPort handlerPort : ports) {
@@ -153,7 +153,7 @@ public class RectShape extends AbstractShape implements EditableShape {
 				}
 			}
 			// 自己
-			rect.x = rect.x + pixel;
+			rect.width = rect.width + pixel;
 		}
 		return true;
 	}
