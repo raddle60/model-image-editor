@@ -32,6 +32,8 @@ public class GraphPane extends JScrollPane {
 	private static final long serialVersionUID = 1L;
 	private List<GraphShape> selectedShapes = new ArrayList<GraphShape>();
 	private GraphShape overShape;
+	private GraphShape pressedShape;
+	private Point pressedShapePoint;
 	private List<GraphShape> topShapes = new ArrayList<GraphShape>();
 
 	public GraphPane() {
@@ -54,14 +56,14 @@ public class GraphPane extends JScrollPane {
 	}
 
 	private List<GraphShape> getAllShapes() {
-		List<GraphShape> allShapes = new LinkedList<GraphShape>();
+		LinkedList<GraphShape> allShapes = new LinkedList<GraphShape>();
 		populateShapes(allShapes, topShapes);
 		return allShapes;
 	}
 
-	private void populateShapes(List<GraphShape> allShapes, Collection<GraphShape> list) {
+	private void populateShapes(LinkedList<GraphShape> allShapes, Collection<GraphShape> list) {
 		for (GraphShape graphShape : list) {
-			allShapes.add(graphShape);
+			allShapes.addFirst(graphShape);
 			populateShapes(allShapes, graphShape.getChildren());
 		}
 	}
@@ -107,6 +109,15 @@ public class GraphPane extends JScrollPane {
 		public void mousePressed(MouseEvent e) {
 			selectedShapes.clear();
 			pressedPoint = e.getPoint();
+			pressedShape = null;
+			pressedShapePoint = null;
+			for (GraphShape graphShape : getAllShapes()) {
+				if (graphShape.contains(e.getPoint().x, e.getPoint().y)) {
+					pressedShape = graphShape;
+					pressedShapePoint = new Point(graphShape.getBounds().x, graphShape.getBounds().y);
+					break;
+				}
+			}
 		}
 
 		public void mouseReleased(MouseEvent e) {
@@ -125,12 +136,19 @@ public class GraphPane extends JScrollPane {
 			}
 			pressedPoint = null;
 			draggedRect = null;
+			pressedShape = null;
+			pressedShapePoint = null;
 			GraphPane.this.repaint();
 		}
 
 		public void mouseDragged(final MouseEvent e) {
 			if (pressedPoint != null) {
 				draggedRect = new DraggedRect(pressedPoint, e.getPoint());
+				if (pressedShape != null && pressedShapePoint != null) {
+					overShape = null;
+					((EditableShape) pressedShape).moveTo(pressedShapePoint.x + (e.getPoint().x - pressedPoint.x),
+							pressedShapePoint.y + (e.getPoint().y - pressedPoint.y));
+				}
 				GraphPane.this.repaint();
 			}
 		}
@@ -177,7 +195,7 @@ public class GraphPane extends JScrollPane {
 		for (GraphShape graphShape : selectedShapes) {
 			graphShape.paintShape(graphics);
 		}
-		if (draggedRect != null && pressedPoint != null) {
+		if (pressedShape == null && draggedRect != null && pressedPoint != null) {
 			DraggedRect rect = draggedRect;
 			graphics.setComposite(AlphaComposite.SrcOver.derive(0.3f));
 			graphics.setColor(Color.BLUE);

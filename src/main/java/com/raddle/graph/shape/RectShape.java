@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
+import com.raddle.graph.EditableShape;
 import com.raddle.graph.decorator.FillRectDecorator;
 import com.raddle.graph.decorator.RectBorderDecorator;
 
@@ -14,10 +15,8 @@ import com.raddle.graph.decorator.RectBorderDecorator;
  * @author xurong
  * 
  */
-public class RectShape extends AbstractShape {
+public class RectShape extends AbstractShape implements EditableShape {
 	private Rectangle rect;
-	private int offsetX;
-	private int offsetY;
 
 	public RectShape(Rectangle rect) {
 		this.rect = rect;
@@ -79,26 +78,16 @@ public class RectShape extends AbstractShape {
 		return getBorder().getThickness();
 	}
 
-	public int getOffsetX() {
-		return offsetX;
+	@Override
+	public boolean isMovable() {
+		return true;
 	}
 
-	public void setOffsetX(int offsetX) {
-		if (parent != null) {
-			this.offsetX = offsetX;
-			rect.x = (int) (parent.getBounds().getX() + offsetX);
-		}
-	}
-
-	public int getOffsetY() {
-		return offsetY;
-	}
-
-	public void setOffsetY(int offsetY) {
-		if (parent != null) {
-			this.offsetY = offsetY;
-			rect.y = (int) (parent.getBounds().getY() + offsetY);
-		}
+	@Override
+	public boolean moveTo(int x, int y) {
+		rect.x = x;
+		rect.y = y;
+		return true;
 	}
 
 }
