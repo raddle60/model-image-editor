@@ -19,12 +19,22 @@ public class RectShape extends AbstractShape {
 
 	public RectShape(Rectangle rect) {
 		this.rect = rect;
+		this.drowBackground = true;
+		this.drowBorder = true;
 		this.background = new FillRectDecorator(Color.blue);
 		this.border = new RectBorderDecorator(Color.black, 2);
 	}
 
 	public RectShape(int x, int y, int width, int height) {
 		this(new Rectangle(x, y, width, height));
+	}
+
+	public FillRectDecorator getBackground() {
+		return (FillRectDecorator) this.background;
+	}
+
+	public RectBorderDecorator getBorder() {
+		return (RectBorderDecorator) this.border;
 	}
 
 	@Override
