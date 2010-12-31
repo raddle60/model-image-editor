@@ -4,12 +4,15 @@
 package com.raddle.graph.shape;
 
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
 import com.raddle.graph.EditableShape;
 import com.raddle.graph.GraphShape;
+import com.raddle.graph.HandlerPort;
 import com.raddle.graph.ShapeDecorator;
 import com.raddle.graph.constant.Direction;
 
@@ -20,6 +23,7 @@ import com.raddle.graph.constant.Direction;
 public abstract class AbstractShape implements EditableShape {
 	protected GraphShape parent;
 	protected List<GraphShape> children = new LinkedList<GraphShape>();
+	protected List<HandlerPort> ports = new ArrayList<HandlerPort>();
 	protected ShapeDecorator background;
 	protected ShapeDecorator border;
 	protected ShapeDecorator label;
@@ -132,6 +136,23 @@ public abstract class AbstractShape implements EditableShape {
 
 	public void setDrowLabel(boolean drowLabel) {
 		this.drowLabel = drowLabel;
+	}
+
+	@Override
+	public List<HandlerPort> getHandlerPorts() {
+		return ports;
+	}
+
+	@Override
+	public void portMoved(HandlerPort port, Point from, Point to) {
+
+	}
+
+	@Override
+	public void showHandlerPorts(Graphics2D graphics) {
+		for (HandlerPort handlerPort : ports) {
+			handlerPort.paintShape(graphics);
+		}
 	}
 
 }
