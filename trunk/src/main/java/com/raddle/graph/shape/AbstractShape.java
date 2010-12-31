@@ -8,14 +8,16 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.raddle.graph.EditableShape;
 import com.raddle.graph.GraphShape;
 import com.raddle.graph.ShapeDecorator;
+import com.raddle.graph.constant.Direction;
 
 /**
  * @author xurong
  * 
  */
-public abstract class AbstractShape implements GraphShape {
+public abstract class AbstractShape implements EditableShape {
 	protected GraphShape parent;
 	protected List<GraphShape> children = new LinkedList<GraphShape>();
 	protected ShapeDecorator background;
@@ -54,6 +56,51 @@ public abstract class AbstractShape implements GraphShape {
 
 	abstract protected void paintBody(Graphics2D graphics);
 
+	@Override
+	public boolean isMovable() {
+		return false;
+	}
+
+	@Override
+	public boolean isScalable() {
+		return false;
+	}
+
+	@Override
+	public boolean isRotatable() {
+		return false;
+	}
+
+	@Override
+	public boolean moveTo(int x, int y) {
+		return false;
+	}
+
+	@Override
+	public boolean moveToOffset(int x, int y) {
+		return false;
+	}
+
+	@Override
+	public boolean scale(int pixel, Direction direction) {
+		return false;
+	}
+
+	@Override
+	public boolean rotate(double angle) {
+		return false;
+	}
+
+	@Override
+	public int getOffsetX() {
+		return 0;
+	}
+
+	@Override
+	public int getOffsetY() {
+		return 0;
+	}
+
 	public boolean isDrowBackground() {
 		return drowBackground;
 	}
@@ -69,4 +116,5 @@ public abstract class AbstractShape implements GraphShape {
 	public void setDrowBorder(boolean drowBorder) {
 		this.drowBorder = drowBorder;
 	}
+
 }
