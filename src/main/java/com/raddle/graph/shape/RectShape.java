@@ -22,7 +22,7 @@ public class RectShape extends AbstractShape {
 		this.drowBackground = true;
 		this.drowBorder = true;
 		this.background = new FillRectDecorator(Color.blue);
-		this.border = new RectBorderDecorator(Color.black, 2);
+		this.border = new RectBorderDecorator(Color.black, 1);
 	}
 
 	public RectShape(int x, int y, int width, int height) {
@@ -70,6 +70,11 @@ public class RectShape extends AbstractShape {
 	@Override
 	public void paintBody(Graphics2D graphics) {
 		// 只有背景和边框
+	}
+
+	@Override
+	public int getBorderThickness() {
+		return getBorder().getThickness();
 	}
 
 }
