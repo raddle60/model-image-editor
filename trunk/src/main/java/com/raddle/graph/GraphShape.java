@@ -2,6 +2,7 @@ package com.raddle.graph;
 
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.Shape;
 import java.util.Collection;
 
 public interface GraphShape {
@@ -100,4 +101,10 @@ public interface GraphShape {
 	 * @return
 	 */
 	public int getBorderThickness();
+	
+	/**
+	 * 获得Swing的图形
+	 * @return
+	 */
+	public Shape getShape();
 }
