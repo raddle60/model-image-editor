@@ -9,6 +9,7 @@ import java.awt.Rectangle;
 
 import com.raddle.graph.EditableShape;
 import com.raddle.graph.decorator.FillRectDecorator;
+import com.raddle.graph.decorator.LabelDecorator;
 import com.raddle.graph.decorator.RectBorderDecorator;
 
 /**
@@ -17,13 +18,16 @@ import com.raddle.graph.decorator.RectBorderDecorator;
  */
 public class RectShape extends AbstractShape implements EditableShape {
 	private Rectangle rect;
+	private String text;
 
 	public RectShape(Rectangle rect) {
 		this.rect = rect;
 		this.drowBackground = true;
 		this.drowBorder = true;
+		this.drowLabel = true;
 		this.background = new FillRectDecorator(Color.blue);
 		this.border = new RectBorderDecorator(Color.black, 1);
+		this.label = new LabelDecorator();
 	}
 
 	public RectShape(int x, int y, int width, int height) {
@@ -36,6 +40,10 @@ public class RectShape extends AbstractShape implements EditableShape {
 
 	public RectBorderDecorator getBorder() {
 		return (RectBorderDecorator) this.border;
+	}
+	
+	public LabelDecorator getLabel(){
+		return (LabelDecorator) this.label;
 	}
 
 	@Override
@@ -88,6 +96,15 @@ public class RectShape extends AbstractShape implements EditableShape {
 		rect.x = x;
 		rect.y = y;
 		return true;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+		((LabelDecorator)label).setText(text);
 	}
 
 }

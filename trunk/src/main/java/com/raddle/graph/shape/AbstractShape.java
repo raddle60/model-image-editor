@@ -22,8 +22,10 @@ public abstract class AbstractShape implements EditableShape {
 	protected List<GraphShape> children = new LinkedList<GraphShape>();
 	protected ShapeDecorator background;
 	protected ShapeDecorator border;
+	protected ShapeDecorator label;
 	protected boolean drowBackground = false;
 	protected boolean drowBorder = false;
+	protected boolean drowLabel = false;
 
 	@Override
 	public GraphShape getParent() {
@@ -49,6 +51,9 @@ public abstract class AbstractShape implements EditableShape {
 			background.decorate(graphics, this);
 		}
 		paintBody(graphics);
+		if (drowLabel && label != null) {
+			label.decorate(graphics, this);
+		}
 		if (drowBorder && border != null) {
 			border.decorate(graphics, this);
 		}
@@ -115,6 +120,18 @@ public abstract class AbstractShape implements EditableShape {
 
 	public void setDrowBorder(boolean drowBorder) {
 		this.drowBorder = drowBorder;
+	}
+
+	public ShapeDecorator getLabel() {
+		return label;
+	}
+
+	public boolean isDrowLabel() {
+		return drowLabel;
+	}
+
+	public void setDrowLabel(boolean drowLabel) {
+		this.drowLabel = drowLabel;
 	}
 
 }
