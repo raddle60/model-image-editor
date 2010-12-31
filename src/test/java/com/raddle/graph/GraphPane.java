@@ -44,14 +44,17 @@ public class GraphPane extends JScrollPane {
 		RectShape rectShape = new RectShape(50, 10, 100, 100);
 		rectShape.getBorder().setDashWidth(15);
 		rectShape.getBorder().setThickness(5);
+		rectShape.setText("rect_" + (topShapes.size() + 1));
 		topShapes.add(rectShape);
 		rectShape = new RectShape(200, 10, 100, 100);
 		rectShape.getBorder().setDashWidth(15);
 		rectShape.getBorder().setThickness(5);
+		rectShape.setText("rect_" + (topShapes.size() + 1));
 		topShapes.add(rectShape);
 		rectShape = new RectShape(50, 150, 100, 100);
 		rectShape.getBorder().setDashWidth(15);
 		rectShape.getBorder().setThickness(5);
+		rectShape.setText("rect_" + (topShapes.size() + 1));
 		topShapes.add(rectShape);
 	}
 
