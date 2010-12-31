@@ -8,5 +8,5 @@ package com.raddle.graph.constant;
  * 
  */
 public enum Direction {
-	left, leftUp, up, rightUp, right, rightDown, down, leftDown
+	horizontal, vertical
 }

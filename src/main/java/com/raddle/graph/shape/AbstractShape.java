@@ -155,4 +155,14 @@ public abstract class AbstractShape implements EditableShape {
 		}
 	}
 
+	@Override
+	public HandlerPort getHandlerPortAt(Point p) {
+		for (HandlerPort handlerPort : ports) {
+			if (handlerPort.contains(p.x, p.y)) {
+				return handlerPort;
+			}
+		}
+		return null;
+	}
+
 }

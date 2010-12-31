@@ -33,4 +33,6 @@ public interface EditableShape extends GraphShape {
 	public void portMoved(HandlerPort port, Point from, Point to);
 	
 	public void showHandlerPorts(Graphics2D graphics);
+	
+	public HandlerPort getHandlerPortAt(Point p);
 }

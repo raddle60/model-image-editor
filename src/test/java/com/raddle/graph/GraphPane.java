@@ -20,6 +20,7 @@ import java.util.List;
 import javax.swing.JScrollPane;
 import javax.swing.border.LineBorder;
 
+import com.raddle.graph.shape.AbstractShape;
 import com.raddle.graph.shape.RectShape;
 
 /**
@@ -31,7 +32,7 @@ public class GraphPane extends JScrollPane {
 	private DraggedRect draggedRect;
 	private static final long serialVersionUID = 1L;
 	private List<GraphShape> selectedShapes = new ArrayList<GraphShape>();
-	private GraphShape overShape;
+	private AbstractShape overShape;
 	private GraphShape pressedShape;
 	private Point pressedShapePoint;
 	private List<GraphShape> topShapes = new ArrayList<GraphShape>();
@@ -136,6 +137,7 @@ public class GraphPane extends JScrollPane {
 						selectedShapes.add(s);
 					}
 				}
+				overShape(e.getPoint());
 			}
 			pressedPoint = null;
 			draggedRect = null;
@@ -149,8 +151,15 @@ public class GraphPane extends JScrollPane {
 				draggedRect = new DraggedRect(pressedPoint, e.getPoint());
 				if (pressedShape != null && pressedShapePoint != null) {
 					overShape = null;
-					((EditableShape) pressedShape).moveTo(pressedShapePoint.x + (e.getPoint().x - pressedPoint.x),
-							pressedShapePoint.y + (e.getPoint().y - pressedPoint.y));
+					EditableShape editableShape = (EditableShape) pressedShape;
+					HandlerPort handlerPortAt = editableShape.getHandlerPortAt(e.getPoint());
+					if (handlerPortAt != null) {
+						editableShape.portMoved(handlerPortAt, new Point(handlerPortAt.getBounds().x,
+								handlerPortAt.getBounds().y), e.getPoint());
+					} else {
+						((EditableShape) pressedShape).moveTo(pressedShapePoint.x + (e.getPoint().x - pressedPoint.x),
+								pressedShapePoint.y + (e.getPoint().y - pressedPoint.y));
+					}
 				}
 				GraphPane.this.repaint();
 			}
@@ -194,6 +203,7 @@ public class GraphPane extends JScrollPane {
 		}
 		if (overShape != null) {
 			overShape.paintShape(graphics);
+			overShape.showHandlerPorts(graphics);
 		}
 		for (GraphShape graphShape : selectedShapes) {
 			graphShape.paintShape(graphics);
