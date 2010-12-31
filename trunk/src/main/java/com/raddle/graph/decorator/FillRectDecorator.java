@@ -7,6 +7,7 @@ import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 
 import com.raddle.graph.GraphShape;
 import com.raddle.graph.ShapeDecorator;
@@ -27,7 +28,7 @@ public class FillRectDecorator implements ShapeDecorator {
 	public FillRectDecorator(Color color) {
 		this.color = color;
 	}
-	
+
 	public FillRectDecorator() {
 	}
 
@@ -39,7 +40,9 @@ public class FillRectDecorator implements ShapeDecorator {
 		if (opacity > 0 && opacity < 1) {
 			graphics.setComposite(AlphaComposite.SrcOver.derive(opacity));
 		}
-		graphics.fill(shape.getBounds());
+		Rectangle bounds = shape.getBounds();
+		graphics.fill(new Rectangle(bounds.x + shape.getBorderThickness(), bounds.y + shape.getBorderThickness(), bounds.width
+				- 2 * shape.getBorderThickness(), bounds.height - 2 * shape.getBorderThickness()));
 		//
 		graphics.setColor(oldColor);
 		graphics.setComposite(oldComposite);

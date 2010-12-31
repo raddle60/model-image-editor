@@ -94,4 +94,10 @@ public interface GraphShape {
 	 * @return
 	 */
 	public int getOffsetY();
+	
+	/**
+	 * 获得边框厚度
+	 * @return
+	 */
+	public int getBorderThickness();
 }
