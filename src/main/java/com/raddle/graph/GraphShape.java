@@ -20,7 +20,7 @@ public interface GraphShape {
 	 * @param y
 	 * @return
 	 */
-	public boolean contains(double x, double y);
+	public boolean contains(int x, int y);
 
 	/**
 	 * 是否包含区域
@@ -31,7 +31,7 @@ public interface GraphShape {
 	 * @param height
 	 * @return
 	 */
-	public boolean contains(double x, double y, double width, double height);
+	public boolean contains(int x, int y, int width, int height);
 
 	/**
 	 * 是否包含区域
@@ -50,7 +50,7 @@ public interface GraphShape {
 	 * @param height
 	 * @return
 	 */
-	public boolean intersects(double x, double y, double width, double height);
+	public boolean intersects(int x, int y, int width, int height);
 
 	/**
 	 * 是否和区域有交叉
