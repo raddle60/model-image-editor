@@ -6,6 +6,7 @@ package com.raddle.graph.shape;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.Shape;
 
 import com.raddle.graph.EditableShape;
 import com.raddle.graph.decorator.FillRectDecorator;
@@ -105,6 +106,11 @@ public class RectShape extends AbstractShape implements EditableShape {
 	public void setText(String text) {
 		this.text = text;
 		((LabelDecorator)label).setText(text);
+	}
+
+	@Override
+	public Shape getShape() {
+		return rect;
 	}
 
 }
