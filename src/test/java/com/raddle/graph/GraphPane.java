@@ -8,6 +8,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -38,7 +39,18 @@ public class GraphPane extends JScrollPane {
 		GraphMouseListener l = new GraphMouseListener();
 		this.addMouseListener(l);
 		this.addMouseMotionListener(l);
-		topShapes.add(new RectShape(10, 10, 100, 100));
+		RectShape rectShape = new RectShape(50, 10, 100, 100);
+		rectShape.getBorder().setDashWidth(15);
+		rectShape.getBorder().setThickness(5);
+		topShapes.add(rectShape);
+		rectShape = new RectShape(200, 10, 100, 100);
+		rectShape.getBorder().setDashWidth(15);
+		rectShape.getBorder().setThickness(5);
+		topShapes.add(rectShape);
+		rectShape = new RectShape(50, 150, 100, 100);
+		rectShape.getBorder().setDashWidth(15);
+		rectShape.getBorder().setThickness(5);
+		topShapes.add(rectShape);
 	}
 
 	private List<GraphShape> getAllShapes() {
@@ -73,6 +85,17 @@ public class GraphPane extends JScrollPane {
 	public class GraphMouseListener implements MouseListener, MouseMotionListener {
 
 		public void mouseClicked(MouseEvent e) {
+			for (GraphShape graphShape : getAllShapes()) {
+				if (graphShape.contains(e.getPoint().x, e.getPoint().y)) {
+					RectShape s = new RectShape(graphShape.getBounds());
+					s.setDrowBackground(false);
+					s.getBorder().setDashWidth(5);
+					s.getBorder().setThickness(3);
+					s.getBorder().setColor(Color.gray);
+					selectedShapes.add(s);
+					break;
+				}
+			}
 		}
 
 		public void mouseEntered(MouseEvent e) {
@@ -82,10 +105,24 @@ public class GraphPane extends JScrollPane {
 		}
 
 		public void mousePressed(MouseEvent e) {
+			selectedShapes.clear();
 			pressedPoint = e.getPoint();
 		}
 
 		public void mouseReleased(MouseEvent e) {
+			if (draggedRect != null) {
+				Rectangle rectangle = draggedRect.toRectangle();
+				for (GraphShape graphShape : getAllShapes()) {
+					if (rectangle.contains(graphShape.getBounds())) {
+						RectShape s = new RectShape(graphShape.getBounds());
+						s.setDrowBackground(false);
+						s.getBorder().setDashWidth(5);
+						s.getBorder().setThickness(3);
+						s.getBorder().setColor(Color.gray);
+						selectedShapes.add(s);
+					}
+				}
+			}
 			pressedPoint = null;
 			draggedRect = null;
 			GraphPane.this.repaint();
@@ -109,13 +146,17 @@ public class GraphPane extends JScrollPane {
 		int x = -1;
 		int y = -1;
 		int width = -1;
-		int heigth = -1;
+		int height = -1;
 
 		public DraggedRect(Point point1, Point point2) {
 			x = Math.min(point1.x, point2.x);
 			y = Math.min(point1.y, point2.y);
 			width = Math.abs(point2.x - point1.x);
-			heigth = Math.abs(point2.y - point1.y);
+			height = Math.abs(point2.y - point1.y);
+		}
+
+		public Rectangle toRectangle() {
+			return new Rectangle(x, y, width, height);
 		}
 
 	}
@@ -140,10 +181,9 @@ public class GraphPane extends JScrollPane {
 			DraggedRect rect = draggedRect;
 			graphics.setComposite(AlphaComposite.SrcOver.derive(0.3f));
 			graphics.setColor(Color.BLUE);
-			graphics.fillRect(rect.x, rect.y, rect.width, rect.heigth);
-			// graphics.setColor(Color.BLACK);
-			new LineBorder(Color.BLACK, 2).paintBorder(null, graphics, rect.x, rect.y, rect.width, rect.heigth);
+			graphics.fillRect(rect.x, rect.y, rect.width, rect.height);
 			graphics.setComposite(AlphaComposite.Clear);
+			new LineBorder(Color.BLUE, 1).paintBorder(null, graphics, rect.x, rect.y, rect.width, rect.height);
 		}
 	}
 }
