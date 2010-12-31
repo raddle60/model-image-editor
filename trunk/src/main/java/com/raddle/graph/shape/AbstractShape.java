@@ -20,6 +20,8 @@ public abstract class AbstractShape implements GraphShape {
 	protected List<GraphShape> children = new LinkedList<GraphShape>();
 	protected ShapeDecorator background;
 	protected ShapeDecorator border;
+	protected boolean drowBackground = false;
+	protected boolean drowBorder = false;
 
 	@Override
 	public GraphShape getParent() {
@@ -59,14 +61,30 @@ public abstract class AbstractShape implements GraphShape {
 
 	@Override
 	public void paintShape(Graphics2D graphics) {
-		if (background != null) {
+		if (drowBackground && background != null) {
 			background.decorate(graphics, this);
 		}
 		paintBody(graphics);
-		if (border != null) {
+		if (drowBorder && border != null) {
 			border.decorate(graphics, this);
 		}
 	}
 
 	abstract protected void paintBody(Graphics2D graphics);
+
+	public boolean isDrowBackground() {
+		return drowBackground;
+	}
+
+	public void setDrowBackground(boolean drowBackground) {
+		this.drowBackground = drowBackground;
+	}
+
+	public boolean isDrowBorder() {
+		return drowBorder;
+	}
+
+	public void setDrowBorder(boolean drowBorder) {
+		this.drowBorder = drowBorder;
+	}
 }

@@ -11,6 +11,10 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.JScrollPane;
 import javax.swing.border.LineBorder;
@@ -25,12 +29,42 @@ public class GraphPane extends JScrollPane {
 	private Point pressedPoint;
 	private DraggedRect draggedRect;
 	private static final long serialVersionUID = 1L;
+	private List<GraphShape> selectedShapes = new ArrayList<GraphShape>();
+	private GraphShape overShape;
+	private List<GraphShape> topShapes = new ArrayList<GraphShape>();
 
 	public GraphPane() {
 		super();
 		GraphMouseListener l = new GraphMouseListener();
 		this.addMouseListener(l);
 		this.addMouseMotionListener(l);
+		topShapes.add(new RectShape(10, 10, 100, 100));
+	}
+
+	private List<GraphShape> getAllShapes() {
+		List<GraphShape> allShapes = new LinkedList<GraphShape>();
+		populateShapes(allShapes, topShapes);
+		return allShapes;
+	}
+
+	private void populateShapes(List<GraphShape> allShapes, Collection<GraphShape> list) {
+		for (GraphShape graphShape : list) {
+			allShapes.add(graphShape);
+			populateShapes(allShapes, graphShape.getChildren());
+		}
+	}
+
+	private void overShape(Point p) {
+		overShape = null;
+		for (GraphShape graphShape : getAllShapes()) {
+			if (graphShape.contains(p.x, p.y)) {
+				RectShape s = new RectShape(graphShape.getBounds());
+				s.setDrowBackground(false);
+				s.getBorder().setColor(Color.RED);
+				overShape = s;
+				break;
+			}
+		}
 	}
 
 	/**
@@ -65,6 +99,8 @@ public class GraphPane extends JScrollPane {
 		}
 
 		public void mouseMoved(MouseEvent e) {
+			overShape(e.getPoint());
+			GraphPane.this.repaint();
 		}
 
 	}
@@ -91,13 +127,21 @@ public class GraphPane extends JScrollPane {
 		graphics.setColor(Color.WHITE);
 		graphics.fillRect(0, 0, GraphPane.this.getWidth(), GraphPane.this.getHeight());
 		graphics.setColor(Color.ORANGE);
-		new RectShape(10, 10, 100, 100).paintShape(graphics);
+		for (GraphShape graphShape : topShapes) {
+			graphShape.paintShape(graphics);
+		}
+		if (overShape != null) {
+			overShape.paintShape(graphics);
+		}
+		for (GraphShape graphShape : selectedShapes) {
+			graphShape.paintShape(graphics);
+		}
 		if (draggedRect != null && pressedPoint != null) {
 			DraggedRect rect = draggedRect;
-			graphics.setComposite(AlphaComposite.SrcOver.derive(0.5f));
+			graphics.setComposite(AlphaComposite.SrcOver.derive(0.3f));
 			graphics.setColor(Color.BLUE);
 			graphics.fillRect(rect.x, rect.y, rect.width, rect.heigth);
-			//graphics.setColor(Color.BLACK);
+			// graphics.setColor(Color.BLACK);
 			new LineBorder(Color.BLACK, 2).paintBorder(null, graphics, rect.x, rect.y, rect.width, rect.heigth);
 			graphics.setComposite(AlphaComposite.Clear);
 		}
