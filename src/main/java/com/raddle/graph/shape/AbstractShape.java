@@ -1,0 +1,72 @@
+/**
+ * 
+ */
+package com.raddle.graph.shape;
+
+import java.awt.Graphics2D;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+
+import com.raddle.graph.GraphShape;
+import com.raddle.graph.ShapeDecorator;
+
+/**
+ * @author xurong
+ * 
+ */
+public abstract class AbstractShape implements GraphShape {
+	protected GraphShape parent;
+	protected List<GraphShape> children = new LinkedList<GraphShape>();
+	protected ShapeDecorator background;
+	protected ShapeDecorator border;
+
+	@Override
+	public GraphShape getParent() {
+		return parent;
+	}
+
+	@Override
+	public Collection<GraphShape> getChildren() {
+		return children;
+	}
+
+	public void addChildren(GraphShape child) {
+		children.add(child);
+	}
+
+	@Override
+	public int getOffsetX() {
+		if (parent == null) {
+			return (int) getBounds().getX();
+		} else {
+			return (int) (getBounds().getX() - parent.getBounds().getX());
+		}
+	}
+
+	@Override
+	public int getOffsetY() {
+		if (parent == null) {
+			return (int) getBounds().getY();
+		} else {
+			return (int) (getBounds().getY() - parent.getBounds().getY());
+		}
+	}
+
+	public void setParent(GraphShape parent) {
+		this.parent = parent;
+	}
+
+	@Override
+	public void paintShape(Graphics2D graphics) {
+		if (background != null) {
+			background.decorate(graphics, this);
+		}
+		paintBody(graphics);
+		if (border != null) {
+			border.decorate(graphics, this);
+		}
+	}
+
+	abstract protected void paintBody(Graphics2D graphics);
+}
