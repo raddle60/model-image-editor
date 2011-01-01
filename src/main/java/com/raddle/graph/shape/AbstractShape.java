@@ -84,19 +84,24 @@ public abstract class AbstractShape implements EditableShape {
 	public boolean moveTo(int x, int y) {
 		return false;
 	}
-
+	
+	@Override
+	public boolean move(int pixel, Direction direction) {
+		return false;
+	}
+	
 	@Override
 	public boolean moveToOffset(int x, int y) {
 		return false;
 	}
 
 	@Override
-	public boolean scale(int pixel, Direction direction) {
+	public boolean scale(int pixel, Direction from, Direction to) {
 		return false;
 	}
 
 	@Override
-	public boolean rotate(double angle) {
+	public boolean rotate(Point center, double angle) {
 		return false;
 	}
 

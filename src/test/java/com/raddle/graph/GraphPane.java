@@ -29,11 +29,14 @@ import com.raddle.graph.shape.RectShape;
  */
 public class GraphPane extends JScrollPane {
 	private Point pressedPoint;
+	private Point draggedPoint;
+	private HandlerPort draggedHandlerPort;
 	private DraggedRect draggedRect;
 	private static final long serialVersionUID = 1L;
 	private List<GraphShape> selectedShapes = new ArrayList<GraphShape>();
 	private AbstractShape overShape;
-	private GraphShape pressedShape;
+	private AbstractShape overMaskShape;
+	private AbstractShape pressedShape;
 	private Point pressedShapePoint;
 	private List<GraphShape> topShapes = new ArrayList<GraphShape>();
 
@@ -79,7 +82,8 @@ public class GraphPane extends JScrollPane {
 				RectShape s = new RectShape(graphShape.getBounds());
 				s.setDrowBackground(false);
 				s.getBorder().setColor(Color.RED);
-				overShape = s;
+				overShape = (AbstractShape) graphShape;
+				overMaskShape = s;
 				break;
 			}
 		}
@@ -113,11 +117,12 @@ public class GraphPane extends JScrollPane {
 		public void mousePressed(MouseEvent e) {
 			selectedShapes.clear();
 			pressedPoint = e.getPoint();
+			draggedPoint = e.getPoint();
 			pressedShape = null;
 			pressedShapePoint = null;
 			for (GraphShape graphShape : getAllShapes()) {
 				if (graphShape.contains(e.getPoint().x, e.getPoint().y)) {
-					pressedShape = graphShape;
+					pressedShape = (AbstractShape) graphShape;
 					pressedShapePoint = new Point(graphShape.getBounds().x, graphShape.getBounds().y);
 					break;
 				}
@@ -140,9 +145,11 @@ public class GraphPane extends JScrollPane {
 				overShape(e.getPoint());
 			}
 			pressedPoint = null;
+			draggedPoint = null;
 			draggedRect = null;
 			pressedShape = null;
 			pressedShapePoint = null;
+			draggedHandlerPort = null;
 			GraphPane.this.repaint();
 		}
 
@@ -152,10 +159,13 @@ public class GraphPane extends JScrollPane {
 				if (pressedShape != null && pressedShapePoint != null) {
 					overShape = null;
 					EditableShape editableShape = (EditableShape) pressedShape;
-					HandlerPort handlerPortAt = editableShape.getHandlerPortAt(e.getPoint());
-					if (handlerPortAt != null) {
-						editableShape.portMoved(handlerPortAt, new Point(handlerPortAt.getBounds().x,
-								handlerPortAt.getBounds().y), e.getPoint());
+					if(draggedHandlerPort == null){
+						draggedHandlerPort = editableShape.getHandlerPortAt(e.getPoint());
+					}
+					if (draggedHandlerPort != null) {
+						Point oldPortPoint = new Point(draggedHandlerPort.getBounds().x, draggedHandlerPort.getBounds().y);
+						editableShape.portMoved(draggedHandlerPort, oldPortPoint, new Point(oldPortPoint.x + (e.getPoint().x - draggedPoint.x),
+								oldPortPoint.y + (e.getPoint().y - draggedPoint.y)));
 					} else {
 						((EditableShape) pressedShape).moveTo(pressedShapePoint.x + (e.getPoint().x - pressedPoint.x),
 								pressedShapePoint.y + (e.getPoint().y - pressedPoint.y));
@@ -163,6 +173,7 @@ public class GraphPane extends JScrollPane {
 				}
 				GraphPane.this.repaint();
 			}
+			draggedPoint = e.getPoint();
 		}
 
 		public void mouseMoved(MouseEvent e) {
@@ -204,6 +215,11 @@ public class GraphPane extends JScrollPane {
 		if (overShape != null) {
 			overShape.paintShape(graphics);
 			overShape.showHandlerPorts(graphics);
+		} else if(pressedShape != null){
+			pressedShape.showHandlerPorts(graphics);
+		}
+		if(overMaskShape != null){
+			overMaskShape.paintShape(graphics);
 		}
 		for (GraphShape graphShape : selectedShapes) {
 			graphShape.paintShape(graphics);
