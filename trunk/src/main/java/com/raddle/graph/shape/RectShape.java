@@ -49,13 +49,21 @@ public class RectShape extends AbstractShape implements EditableShape {
 		this.label = new LabelDecorator();
 		// 增加port
 		leftMiddlePort = new BasicHandlerPort(rect.x, rect.y + rect.height / 2 - portWidth / 2, portWidth, portWidth);
+		leftMiddlePort.addDirection(Direction.left, Direction.right);
 		leftTopPort = new BasicHandlerPort(rect.x, rect.y, portWidth, portWidth);
+		leftTopPort.addDirection(Direction.up, Direction.down, Direction.left, Direction.right);
 		topMiddlePort = new BasicHandlerPort(rect.x + rect.width / 2 - portWidth / 2, rect.y, portWidth, portWidth);
+		topMiddlePort.addDirection(Direction.down, Direction.up);
 		rightTopPort = new BasicHandlerPort(rect.x + rect.width - portWidth, rect.y, portWidth, portWidth);
+		rightTopPort.addDirection(Direction.up, Direction.down, Direction.left, Direction.right);
 		rightMiddlePort = new BasicHandlerPort(rect.x + rect.width - portWidth, rect.y + rect.height / 2 - portWidth / 2, portWidth, portWidth);
+		rightMiddlePort.addDirection(Direction.left, Direction.right);
 		rightBottomPort = new BasicHandlerPort(rect.x + rect.width - portWidth, rect.y + rect.height - portWidth, portWidth, portWidth);
+		rightBottomPort.addDirection(Direction.up, Direction.down, Direction.left, Direction.right);
 		bottomMiddlePort = new BasicHandlerPort(rect.x + rect.width / 2 - portWidth / 2, rect.y + rect.height - portWidth, portWidth, portWidth);
+		bottomMiddlePort.addDirection(Direction.up, Direction.down);
 		leftBottom = new BasicHandlerPort(rect.x, rect.y + rect.height - portWidth, portWidth, portWidth);
+		leftBottom.addDirection(Direction.up, Direction.down, Direction.left, Direction.right);
 		ports.add(leftMiddlePort);
 		ports.add(leftTopPort);
 		ports.add(topMiddlePort);
@@ -292,16 +300,16 @@ public class RectShape extends AbstractShape implements EditableShape {
 
 	@Override
 	public void portMoved(HandlerPort port, Point from, Point to) {
-		if (to.x > from.x) {
+		if (to.x > from.x && port.isAcceptDirection(Direction.right)) {
 			scale(to.x - from.x, getFromDirection(port, Direction.right), Direction.right);
 		}
-		if (to.x < from.x) {
+		if (to.x < from.x && port.isAcceptDirection(Direction.left)) {
 			scale(from.x - to.x, getFromDirection(port, Direction.left), Direction.left);
 		}
-		if (to.y > from.y) {
+		if (to.y > from.y && port.isAcceptDirection(Direction.down)) {
 			scale(to.y - from.y, getFromDirection(port, Direction.down), Direction.down);
 		}
-		if (to.y < from.y) {
+		if (to.y < from.y && port.isAcceptDirection(Direction.up)) {
 			scale(from.y - to.y, getFromDirection(port, Direction.up), Direction.up);
 		}
 	}

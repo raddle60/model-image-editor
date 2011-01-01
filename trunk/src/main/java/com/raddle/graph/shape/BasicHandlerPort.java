@@ -7,6 +7,9 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.raddle.graph.HandlerPort;
 import com.raddle.graph.constant.Direction;
@@ -19,6 +22,7 @@ import com.raddle.graph.decorator.RectBorderDecorator;
  */
 public class BasicHandlerPort extends AbstractShape implements HandlerPort {
 	private Rectangle rect;
+	private Set<Direction> acceptDirections = new HashSet<Direction>();
 
 	public BasicHandlerPort(Rectangle rect) {
 		this.rect = rect;
@@ -27,6 +31,14 @@ public class BasicHandlerPort extends AbstractShape implements HandlerPort {
 		this.drowLabel = true;
 		this.background = new FillRectDecorator(Color.green);
 		this.border = new RectBorderDecorator(Color.black, 1);
+	}
+
+	public void addDirection(Direction... directions) {
+		acceptDirections.addAll(Arrays.asList(directions));
+	}
+
+	public void removeDirection(Direction direction) {
+		acceptDirections.remove(direction);
 	}
 
 	public BasicHandlerPort(int x, int y, int width, int height) {
@@ -84,7 +96,7 @@ public class BasicHandlerPort extends AbstractShape implements HandlerPort {
 		rect.y = y;
 		return true;
 	}
-	
+
 	@Override
 	public boolean move(int pixel, Direction direction) {
 		if (direction == Direction.up) {
@@ -98,14 +110,19 @@ public class BasicHandlerPort extends AbstractShape implements HandlerPort {
 		}
 		return true;
 	}
-	
+
 	@Override
 	public Shape getShape() {
 		return rect;
 	}
-	
+
 	public RectBorderDecorator getBorder() {
 		return (RectBorderDecorator) this.border;
+	}
+
+	@Override
+	public boolean isAcceptDirection(Direction direction) {
+		return acceptDirections.contains(direction);
 	}
 
 }
