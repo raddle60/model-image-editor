@@ -197,7 +197,6 @@ public class RectShape extends AbstractShape implements EditableShape {
 
 	@Override
 	public boolean scale(int pixel, Direction from, Direction to) {
-		System.out.println(pixel + "-" + from + "-" + to);
 		if (pixel == 0) {
 			return true;
 		}
