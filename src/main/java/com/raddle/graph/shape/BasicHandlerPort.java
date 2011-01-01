@@ -49,7 +49,7 @@ public class BasicHandlerPort extends AbstractShape implements HandlerPort {
 
 	@Override
 	public boolean contains(Rectangle rect) {
-		return rect.contains(rect);
+		return this.rect.contains(rect);
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public class BasicHandlerPort extends AbstractShape implements HandlerPort {
 
 	@Override
 	public boolean intersects(Rectangle rect) {
-		return rect.intersects(rect);
+		return this.rect.intersects(rect);
 	}
 
 	@Override
