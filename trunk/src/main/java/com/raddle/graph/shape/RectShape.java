@@ -35,12 +35,12 @@ public class RectShape extends AbstractShape implements EditableShape {
 		// 增加port
 		int portWidth = 8;
 		ports.add(new BasicHandlerPort(rect.x, rect.y, portWidth, portWidth));
-		ports.add(new BasicHandlerPort(rect.x + rect.width / 2, rect.y, portWidth, portWidth));
+		ports.add(new BasicHandlerPort(rect.x + rect.width / 2 - portWidth/2, rect.y, portWidth, portWidth));
 		ports.add(new BasicHandlerPort(rect.x + rect.width - portWidth, rect.y, portWidth, portWidth));
-		ports.add(new BasicHandlerPort(rect.x, rect.y + rect.height / 2, portWidth, portWidth));
-		ports.add(new BasicHandlerPort(rect.x + rect.width - portWidth, rect.y + rect.height / 2, portWidth, portWidth));
+		ports.add(new BasicHandlerPort(rect.x, rect.y + rect.height / 2 - portWidth/2, portWidth, portWidth));
+		ports.add(new BasicHandlerPort(rect.x + rect.width - portWidth, rect.y + rect.height / 2 - portWidth/2, portWidth, portWidth));
 		ports.add(new BasicHandlerPort(rect.x, rect.y + rect.height - portWidth, portWidth, portWidth));
-		ports.add(new BasicHandlerPort(rect.x + rect.width / 2, rect.y + rect.height - portWidth, portWidth, portWidth));
+		ports.add(new BasicHandlerPort(rect.x + rect.width / 2 - portWidth/2, rect.y + rect.height - portWidth, portWidth, portWidth));
 		ports.add(new BasicHandlerPort(rect.x + rect.width - portWidth, rect.y + rect.height - portWidth, portWidth, portWidth));
 	}
 
