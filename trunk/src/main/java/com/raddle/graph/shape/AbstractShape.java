@@ -7,14 +7,17 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import com.raddle.graph.EditableShape;
 import com.raddle.graph.GraphShape;
 import com.raddle.graph.HandlerPort;
 import com.raddle.graph.ShapeDecorator;
 import com.raddle.graph.constant.Direction;
+import com.raddle.graph.constant.ShapeState;
 
 /**
  * @author xurong
@@ -30,6 +33,7 @@ public abstract class AbstractShape implements EditableShape {
 	protected boolean drowBackground = false;
 	protected boolean drowBorder = false;
 	protected boolean drowLabel = false;
+	protected Set<ShapeState> shapeStates = new HashSet<ShapeState>();
 
 	@Override
 	public GraphShape getParent() {
@@ -168,6 +172,26 @@ public abstract class AbstractShape implements EditableShape {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public void addState(ShapeState state) {
+		shapeStates.add(state);
+	}
+
+	@Override
+	public void removeState(ShapeState state) {
+		shapeStates.remove(state);
+	}
+
+	@Override
+	public void clearState(ShapeState state) {
+		shapeStates.clear();
+	}
+
+	@Override
+	public boolean containState(ShapeState state) {
+		return shapeStates.contains(state);
 	}
 
 }

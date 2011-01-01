@@ -8,6 +8,7 @@ import java.awt.Point;
 import java.util.List;
 
 import com.raddle.graph.constant.Direction;
+import com.raddle.graph.constant.ShapeState;
 
 /**
  * @author xurong
@@ -37,4 +38,12 @@ public interface EditableShape extends GraphShape {
 	public void showHandlerPorts(Graphics2D graphics);
 	
 	public HandlerPort getHandlerPortAt(Point p);
+	
+	public void addState(ShapeState state);
+	
+	public void removeState(ShapeState state);
+	
+	public void clearState(ShapeState state);
+	
+	public boolean containState(ShapeState state);
 }
