@@ -21,12 +21,14 @@ public interface EditableShape extends GraphShape {
 	public boolean isRotatable();
 
 	public boolean moveTo(int x, int y);
+	
+	public boolean move(int pixel, Direction direction);
 
 	public boolean moveToOffset(int x, int y);
 
-	public boolean scale(int pixel, Direction direction);
+	public boolean scale(int pixel, Direction from, Direction to);
 
-	public boolean rotate(double angle);
+	public boolean rotate(Point center, double angle);
 
 	public List<HandlerPort> getHandlerPorts();
 

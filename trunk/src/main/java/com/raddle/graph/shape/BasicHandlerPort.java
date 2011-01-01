@@ -9,6 +9,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 
 import com.raddle.graph.HandlerPort;
+import com.raddle.graph.constant.Direction;
 import com.raddle.graph.decorator.FillRectDecorator;
 import com.raddle.graph.decorator.RectBorderDecorator;
 
@@ -83,6 +84,21 @@ public class BasicHandlerPort extends AbstractShape implements HandlerPort {
 		rect.y = y;
 		return true;
 	}
+	
+	@Override
+	public boolean move(int pixel, Direction direction) {
+		if (direction == Direction.up) {
+			rect.y -= pixel;
+		} else if (direction == Direction.down) {
+			rect.y += pixel;
+		} else if (direction == Direction.left) {
+			rect.x -= pixel;
+		} else if (direction == Direction.right) {
+			rect.x += pixel;
+		}
+		return true;
+	}
+	
 	@Override
 	public Shape getShape() {
 		return rect;
