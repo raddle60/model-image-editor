@@ -65,10 +65,15 @@ public abstract class AbstractShape implements EditableShape {
 		if (drowBorder && border != null) {
 			border.decorate(graphics, this);
 		}
+		afterPaint(graphics);
 	}
 
+	protected void afterPaint(Graphics2D graphics){
+		
+	}
+	
 	abstract protected void paintBody(Graphics2D graphics);
-
+	
 	@Override
 	public boolean isMovable() {
 		return false;
