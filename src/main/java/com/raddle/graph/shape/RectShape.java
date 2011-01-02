@@ -13,7 +13,10 @@ import java.util.List;
 
 import com.raddle.graph.EditableShape;
 import com.raddle.graph.HandlerPort;
+import com.raddle.graph.RenderRuntime;
+import com.raddle.graph.ShapeDecorator;
 import com.raddle.graph.constant.Direction;
+import com.raddle.graph.constant.ShapeState;
 import com.raddle.graph.decorator.FillRectDecorator;
 import com.raddle.graph.decorator.LabelDecorator;
 import com.raddle.graph.decorator.RectBorderDecorator;
@@ -38,6 +41,9 @@ public class RectShape extends AbstractShape implements EditableShape {
 	private List<BasicHandlerPort> rightPorts = new ArrayList<BasicHandlerPort>();
 	private List<BasicHandlerPort> topPorts = new ArrayList<BasicHandlerPort>();
 	private List<BasicHandlerPort> bottomPorts = new ArrayList<BasicHandlerPort>();
+	private ShapeDecorator selectedDecorator = new RectBorderDecorator(Color.red, 2);
+	private ShapeDecorator mouseoverDecorator = new RectBorderDecorator(Color.gray, 2);
+	private ShapeDecorator pressedDecorator = new FillRectDecorator(Color.green, 0.5f);
 
 	public RectShape(Rectangle rect) {
 		this.rect = rect;
@@ -330,6 +336,22 @@ public class RectShape extends AbstractShape implements EditableShape {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	protected void afterPaint(Graphics2D graphics) {
+		if(!RenderRuntime.getRuntime().isPurePainting()){
+			if(containState(ShapeState.mouseover) && mouseoverDecorator != null){
+				mouseoverDecorator.decorate(graphics, this);
+				this.showHandlerPorts(graphics);
+			}
+			if(containState(ShapeState.pressed) && pressedDecorator != null){
+				pressedDecorator.decorate(graphics, this);
+			}
+			if(containState(ShapeState.selected) && selectedDecorator != null){
+				selectedDecorator.decorate(graphics, this);
+			}
+		}
 	}
 
 }
