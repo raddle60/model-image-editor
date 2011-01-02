@@ -12,7 +12,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.raddle.graph.HandlerPort;
+import com.raddle.graph.RenderRuntime;
+import com.raddle.graph.ShapeDecorator;
 import com.raddle.graph.constant.Direction;
+import com.raddle.graph.constant.ShapeState;
 import com.raddle.graph.decorator.FillRectDecorator;
 import com.raddle.graph.decorator.RectBorderDecorator;
 
@@ -23,6 +26,7 @@ import com.raddle.graph.decorator.RectBorderDecorator;
 public class BasicHandlerPort extends AbstractShape implements HandlerPort {
 	private Rectangle rect;
 	private Set<Direction> acceptDirections = new HashSet<Direction>();
+	private ShapeDecorator mouseoverDecorator = new RectBorderDecorator(Color.red, 2);
 
 	public BasicHandlerPort(Rectangle rect) {
 		this.rect = rect;
@@ -79,7 +83,17 @@ public class BasicHandlerPort extends AbstractShape implements HandlerPort {
 	public void paintBody(Graphics2D graphics) {
 		// 只有背景和边框
 	}
-
+	
+	@Override
+	protected void afterPaint(Graphics2D graphics) {
+		if(!RenderRuntime.getRuntime().isPurePainting()){
+			if(containState(ShapeState.mouseover) && mouseoverDecorator != null){
+				mouseoverDecorator.decorate(graphics, this);
+				this.showHandlerPorts(graphics);
+			}
+		}
+	}
+	
 	@Override
 	public int getBorderThickness() {
 		return getBorder().getThickness();
