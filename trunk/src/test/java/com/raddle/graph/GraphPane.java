@@ -20,6 +20,7 @@ import java.util.List;
 import javax.swing.JScrollPane;
 import javax.swing.border.LineBorder;
 
+import com.raddle.graph.constant.ShapeState;
 import com.raddle.graph.shape.AbstractShape;
 import com.raddle.graph.shape.RectShape;
 
@@ -33,12 +34,11 @@ public class GraphPane extends JScrollPane {
 	private HandlerPort draggedHandlerPort;
 	private DraggedRect draggedRect;
 	private static final long serialVersionUID = 1L;
-	private List<GraphShape> selectedShapes = new ArrayList<GraphShape>();
+	private List<AbstractShape> selectedShapes = new ArrayList<AbstractShape>();
 	private AbstractShape overShape;
-	private AbstractShape overMaskShape;
 	private AbstractShape pressedShape;
 	private Point pressedShapePoint;
-	private List<GraphShape> topShapes = new ArrayList<GraphShape>();
+	private List<AbstractShape> topShapes = new ArrayList<AbstractShape>();
 
 	public GraphPane() {
 		super();
@@ -62,20 +62,27 @@ public class GraphPane extends JScrollPane {
 		topShapes.add(rectShape);
 	}
 
-	private List<GraphShape> getAllShapes() {
-		LinkedList<GraphShape> allShapes = new LinkedList<GraphShape>();
+	private List<AbstractShape> getAllShapes() {
+		LinkedList<AbstractShape> allShapes = new LinkedList<AbstractShape>();
 		populateShapes(allShapes, topShapes);
 		return allShapes;
 	}
 
-	private void populateShapes(LinkedList<GraphShape> allShapes, Collection<GraphShape> list) {
-		for (GraphShape graphShape : list) {
+	private void populateShapes(LinkedList<AbstractShape> allShapes, Collection<AbstractShape> list) {
+		for (AbstractShape graphShape : list) {
 			allShapes.addFirst(graphShape);
-			populateShapes(allShapes, graphShape.getChildren());
+			LinkedList<AbstractShape> children = new LinkedList<AbstractShape>();
+			for (GraphShape child : graphShape.getChildren()) {
+				children.add((AbstractShape)child);
+			}
+			populateShapes(allShapes, children);
 		}
 	}
 
 	private void overShape(Point p) {
+		if (overShape != null) {
+			overShape.removeState(ShapeState.mouseover);
+		}
 		overShape = null;
 		for (GraphShape graphShape : getAllShapes()) {
 			if (graphShape.contains(p.x, p.y)) {
@@ -83,9 +90,11 @@ public class GraphPane extends JScrollPane {
 				s.setDrowBackground(false);
 				s.getBorder().setColor(Color.RED);
 				overShape = (AbstractShape) graphShape;
-				overMaskShape = s;
 				break;
 			}
+		}
+		if (overShape != null) {
+			overShape.addState(ShapeState.mouseover);
 		}
 	}
 
@@ -97,15 +106,14 @@ public class GraphPane extends JScrollPane {
 		public void mouseClicked(MouseEvent e) {
 			for (GraphShape graphShape : getAllShapes()) {
 				if (graphShape.contains(e.getPoint().x, e.getPoint().y)) {
-					RectShape s = new RectShape(graphShape.getBounds());
-					s.setDrowBackground(false);
-					s.getBorder().setDashWidth(5);
-					s.getBorder().setThickness(3);
-					s.getBorder().setColor(Color.gray);
-					selectedShapes.add(s);
+					selectedShapes.add((AbstractShape) graphShape);
 					break;
 				}
 			}
+			for (AbstractShape graphShape : selectedShapes) {
+				graphShape.addState(ShapeState.selected);
+			}
+			GraphPane.this.repaint();
 		}
 
 		public void mouseEntered(MouseEvent e) {
@@ -115,6 +123,9 @@ public class GraphPane extends JScrollPane {
 		}
 
 		public void mousePressed(MouseEvent e) {
+			for (AbstractShape graphShape : selectedShapes) {
+				graphShape.removeState(ShapeState.selected);
+			}
 			selectedShapes.clear();
 			pressedPoint = e.getPoint();
 			draggedPoint = e.getPoint();
@@ -127,6 +138,10 @@ public class GraphPane extends JScrollPane {
 					break;
 				}
 			}
+			if(pressedShape != null){
+				pressedShape.addState(ShapeState.pressed);
+			}
+			GraphPane.this.repaint();
 		}
 
 		public void mouseReleased(MouseEvent e) {
@@ -144,6 +159,11 @@ public class GraphPane extends JScrollPane {
 				}
 				overShape(e.getPoint());
 			}
+			///////
+			if(pressedShape != null){
+				pressedShape.removeState(ShapeState.pressed);
+			}
+			////
 			pressedPoint = null;
 			draggedPoint = null;
 			draggedRect = null;
@@ -212,18 +232,18 @@ public class GraphPane extends JScrollPane {
 		for (GraphShape graphShape : topShapes) {
 			graphShape.paintShape(graphics);
 		}
-		if (overShape != null) {
-			overShape.paintShape(graphics);
-			overShape.showHandlerPorts(graphics);
-		} else if(pressedShape != null){
-			pressedShape.showHandlerPorts(graphics);
-		}
-		if(overMaskShape != null){
-			overMaskShape.paintShape(graphics);
-		}
-		for (GraphShape graphShape : selectedShapes) {
-			graphShape.paintShape(graphics);
-		}
+//		if (overShape != null) {
+//			overShape.paintShape(graphics);
+//			overShape.showHandlerPorts(graphics);
+//		} else if(pressedShape != null){
+//			pressedShape.showHandlerPorts(graphics);
+//		}
+//		if(overMaskShape != null){
+//			overMaskShape.paintShape(graphics);
+//		}
+//		for (GraphShape graphShape : selectedShapes) {
+//			graphShape.paintShape(graphics);
+//		}
 		if (pressedShape == null && draggedRect != null && pressedPoint != null) {
 			DraggedRect rect = draggedRect;
 			graphics.setComposite(AlphaComposite.SrcOver.derive(0.3f));
