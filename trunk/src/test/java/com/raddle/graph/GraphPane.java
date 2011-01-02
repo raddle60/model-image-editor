@@ -32,6 +32,7 @@ public class GraphPane extends JScrollPane {
 	private Point pressedPoint;
 	private Point draggedPoint;
 	private HandlerPort draggedHandlerPort;
+	private HandlerPort overHandlerPort;
 	private DraggedRect draggedRect;
 	private static final long serialVersionUID = 1L;
 	private List<AbstractShape> selectedShapes = new ArrayList<AbstractShape>();
@@ -80,21 +81,33 @@ public class GraphPane extends JScrollPane {
 	}
 
 	private void overShape(Point p) {
+		if (overHandlerPort != null) {
+			overHandlerPort.removeState(ShapeState.mouseover);
+		}
 		if (overShape != null) {
 			overShape.removeState(ShapeState.mouseover);
 		}
 		overShape = null;
-		for (GraphShape graphShape : getAllShapes()) {
+		for (AbstractShape graphShape : getAllShapes()) {
 			if (graphShape.contains(p.x, p.y)) {
-				RectShape s = new RectShape(graphShape.getBounds());
-				s.setDrowBackground(false);
-				s.getBorder().setColor(Color.RED);
-				overShape = (AbstractShape) graphShape;
+				overShape = graphShape;
 				break;
+			}
+		}
+		overHandlerPort = null;
+		if(overShape != null){
+			for (HandlerPort port : overShape.getHandlerPorts()) {
+				if(port.contains(p.x, p.y)){
+					overHandlerPort = port;
+					break;
+				}
 			}
 		}
 		if (overShape != null) {
 			overShape.addState(ShapeState.mouseover);
+		}
+		if (overHandlerPort != null) {
+			overHandlerPort.addState(ShapeState.mouseover);
 		}
 	}
 
@@ -177,7 +190,6 @@ public class GraphPane extends JScrollPane {
 
 		public void mouseDragged(final MouseEvent e) {
 			if (pressedPoint != null) {
-				draggedRect = new DraggedRect(pressedPoint, e.getPoint());
 				if (pressedShape != null && pressedShapePoint != null) {
 					overShape = null;
 					EditableShape editableShape = (EditableShape) pressedShape;
@@ -192,6 +204,8 @@ public class GraphPane extends JScrollPane {
 						((EditableShape) pressedShape).moveTo(pressedShapePoint.x + (e.getPoint().x - pressedPoint.x),
 								pressedShapePoint.y + (e.getPoint().y - pressedPoint.y));
 					}
+				} else {
+					draggedRect = new DraggedRect(pressedPoint, e.getPoint());
 				}
 				GraphPane.this.repaint();
 			}

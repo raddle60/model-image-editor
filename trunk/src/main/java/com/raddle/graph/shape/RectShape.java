@@ -28,7 +28,7 @@ import com.raddle.graph.decorator.RectBorderDecorator;
 public class RectShape extends AbstractShape implements EditableShape {
 	private Rectangle rect;
 	private String text;
-	private int portWidth = 8;
+	private int portWidth = 10;
 	private BasicHandlerPort leftMiddlePort;
 	private BasicHandlerPort leftTopPort;
 	private BasicHandlerPort topMiddlePort;
