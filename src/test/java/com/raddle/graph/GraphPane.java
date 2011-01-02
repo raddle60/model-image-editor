@@ -104,6 +104,10 @@ public class GraphPane extends JScrollPane {
 	public class GraphMouseListener implements MouseListener, MouseMotionListener {
 
 		public void mouseClicked(MouseEvent e) {
+			for (AbstractShape graphShape : selectedShapes) {
+				graphShape.removeState(ShapeState.selected);
+			}
+			selectedShapes.clear();
 			for (GraphShape graphShape : getAllShapes()) {
 				if (graphShape.contains(e.getPoint().x, e.getPoint().y)) {
 					selectedShapes.add((AbstractShape) graphShape);
@@ -123,10 +127,6 @@ public class GraphPane extends JScrollPane {
 		}
 
 		public void mousePressed(MouseEvent e) {
-			for (AbstractShape graphShape : selectedShapes) {
-				graphShape.removeState(ShapeState.selected);
-			}
-			selectedShapes.clear();
 			pressedPoint = e.getPoint();
 			draggedPoint = e.getPoint();
 			pressedShape = null;
@@ -146,16 +146,18 @@ public class GraphPane extends JScrollPane {
 
 		public void mouseReleased(MouseEvent e) {
 			if (draggedRect != null) {
+				for (AbstractShape graphShape : selectedShapes) {
+					graphShape.removeState(ShapeState.selected);
+				}
+				selectedShapes.clear();
 				Rectangle rectangle = draggedRect.toRectangle();
 				for (GraphShape graphShape : getAllShapes()) {
 					if (rectangle.contains(graphShape.getBounds())) {
-						RectShape s = new RectShape(graphShape.getBounds());
-						s.setDrowBackground(false);
-						s.getBorder().setDashWidth(5);
-						s.getBorder().setThickness(3);
-						s.getBorder().setColor(Color.gray);
-						selectedShapes.add(s);
+						selectedShapes.add((AbstractShape) graphShape);
 					}
+				}
+				for (AbstractShape graphShape : selectedShapes) {
+					graphShape.addState(ShapeState.selected);
 				}
 				overShape(e.getPoint());
 			}
